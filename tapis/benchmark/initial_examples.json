@@ -1,0 +1,35 @@
+[
+    {
+        "type": "",
+        "section": "",
+        "question": "",
+        "full_answer":""
+    },
+
+    {
+        "type": "conceptual",
+        "section": "authentication",
+        "question": "What are the reasons for choosing to deploy an associate site versus a primary site?",
+        "summary_answer": "Choosing to deploy an associate site versus a primary site for Tapis depends on several factors related to the administrative overhead, resource requirements, and the desired level of independence.",
+        "full_answer": "Choosing to deploy an associate site versus a primary site for Tapis depends on several factors related to the administrative overhead, resource requirements, and the desired level of independence. 1) Reduced Administrative Burden and Computational Resource Requirement: Associate sites do not need to deploy all Tapis services. They can choose to run only a few critical services on-premise, while utilizing the corresponding services on the primary site for other functionalities. In contrast, primary sites must deploy a complete set of Tapis API services and all associated 3rd-party services, such as databases and message queues, which significantly increases the administrative burden and computational resource requirement. 2) Flexibility in Service Deployment: Partner institutions operating an associate site can choose which Tapis services to run within their own infrastructure and leverage the primary site's deployment for the rest. This allows them to tailor their deployment to their specific needs and resources. 3) Full Administrative Control over Local Resources: Associate sites maintain full administrative control over the Tapis services they run at their site and full administrative control over the tenants they own. 4) Leveraging Existing Primary Site Infrastructure: Associate sites can rely on the primary site for services they choose not to run locally, as well as for the unique instance of the Sites and Tenants API which maintains the complete registry of all sites and tenants. The primary site, such as the one hosted at the Texas Advanced Computing Center at tapis.io, runs a complete set of Tapis API services. 5) Easier Initial Deployment: Deploying an associate site might be less complex initially compared to a primary site, as it involves setting up fewer services. The official Tapis deployment tooling targets Kubernetes. However, it's important to note that associate sites are dependent on the primary site to be functional. If the primary site goes offline, the associate site will also not function. Additionally, the creation of new sites and the management of the site and tenant registry are coordinated through the primary site. If your institution is interested in becoming a Tapis associate site, you should contact the operators of the primary site."
+    },
+    {
+        "type": "code_generation",
+        "section": "authentication",
+        "question": "Write Python code to use tapipy to generate a Tapis token in the a2cps tenant (i.e., the tenant id is 'a2cps')",
+        "full_answer": "from tapipy.tapis import Tapis\n\n# Define the base URL for the a2cps tenant\nbase_url = 'https://a2cps.tapis.io'\n\n# Replace with your actual TACC username and password for the 'a2cps' tenant\nusername = 'your_tacc_username'\npassword = 'your_tacc_password'\n\n# Initialize the Tapis client for the 'a2cps' tenant\ntry:\n    t = Tapis(base_url=base_url, username=username, password=password)\n    # Get the Tapis tokens\n    t.get_tokens()\n    # The access token will now be stored in t.access_token\n    print('Successfully generated Tapis token for the 'a2cps' tenant.')\n    print('Access Token:', t.access_token.access_token)\nexcept Exception as e:\n    print(f'An error occurred while generating the Tapis token: {e}')"
+    },
+    {
+        "type": "code_correction",
+        "section": "authentication",
+        "question": "The following code returned the error AttributeError: 'Resource' object has no attribute 'list_systems'. Here is the code: \nfrom tapipy.tapis import Tapis\n\nclient = Tapis(base_url='https://tacc.tapis.io', username='apiuser', password='sdkjwdfh32983dk239')\nclient.get_tokens()\nsystems = client.systems.list_systems()\nprint(systems)\n \n\nPlease fix the code to get rid of the error.",
+        "full_answer":"The error 'AttributeError: 'Resource' object has no attribute 'list_systems'' indicates that the method you are trying to call, list_systems(), does not exist as an attribute of the client.systems object in the tapipy library. Based on the information in the sources, the correct tapipy method to retrieve a list of systems is getSystems(). Here is the corrected code: \nfrom tapipy.tapis import Tapis\n\n# Replace with your actual TACC username and password\nclient = Tapis(base_url='https://tacc.tapis.io', username='apiuser', password='sdkjwdfh32983dk239')\nclient.get_tokens()\nsystems = client.systems.getSystems()\nprint(systems)\n"        
+    },
+    {
+        "type": "invalid",
+        "section": "authentication",
+        "question": "How do I use the Tapis ssh-key extension library of tapipy and a private key to generate a Tapis token?",
+        "full_answer":"There is no mention of a specific ssh-key extension library within tapipy that directly facilitates generating a Tapis token using a private SSH key."
+    }
+
+]

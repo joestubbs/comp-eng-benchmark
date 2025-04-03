@@ -1,0 +1,314 @@
+[
+    {
+      "question_type": "Conceptual",
+      "section": "Authentication",
+      "question": "What is a Tapis JWT and what is its primary function in the Tapis ecosystem?",
+      "answer": "A **Tapis JWT (JSON Web Token)** is a security token used for **authentication and authorization** when interacting with Tapis services [1-3]. It allows users and services to prove their identity and permissions to access protected resources."
+    },
+    {
+      "question_type": "Code Generation",
+      "section": "Authentication",
+      "question": "After initializing a `Tapis` client object in Python using the `tapipy` library, how would you typically retrieve your access token?",
+      "answer": "After creating a `Tapis` object, you can access your **access token** using the attribute `t.access_token` [2, 3]."
+    },
+    {
+      "question_type": "Code Correction",
+      "section": "Authentication",
+      "question": "The following Python code using `tapipy` is intended to print the expiration time of your access token, but it's not working. `print(t.token_expires)`. What is the correct attribute to access the expiration time of the token?",
+      "answer": "The correct attribute to access the expiration time of the access token in a `Tapis` object using `tapipy` is `t.expires_at` [2, 3]."
+    },
+    {
+      "question_type": "Invalid",
+      "section": "Authentication",
+      "question": "Does Tapis support authentication using Kerberos tickets for API access?",
+      "answer": "Based on the provided sources, there is no mention of Tapis supporting authentication via Kerberos tickets. The primary authentication mechanism discussed involves Tapis JWTs [1-3]."
+    },
+    {
+      "question_type": "Conceptual",
+      "section": "Files",
+      "question": "What is a Tapis PostIt, and what is a common use case for them?",
+      "answer": "A **Tapis PostIt** is a secure, short-lived URL that grants temporary access to a specific file or directory on a Tapis system [4-6]. A common use case is to **share files with users who may not have a Tapis account** or to provide **limited-time access** to data."
+    },
+    {
+      "question_type": "Code Generation",
+      "section": "Files",
+      "question": "Using the `tapipy` library, write a Python command to list the files and directories within the path `/mydata` on the Tapis system with the ID `mysystem`.",
+      "answer": "```python\nresults = t.files.listFiles(systemId='mysystem', path='/mydata')\n``` [7-9]\nNote that you would need to have a `Tapis` client object `t` initialized and authenticated."
+    },
+    {
+      "question_type": "Code Correction",
+      "section": "Files",
+      "question": "The following `curl` command attempts to create a new directory named `new_folder` in the root directory of the system with ID `my_system`, but it's failing. `curl -X POST -H \"Content-Type: application/json\" -H \"X-Tapis-Token: $JWT\" https://tacc.tapis.io/v3/files/ops/my_system -d '{\"path\": \"new_folder\"}'`. What is the correct endpoint path for creating a directory?",
+      "answer": "The correct endpoint path for creating a directory on a Tapis system should include the specific path within the `/ops` endpoint. The corrected `curl` command would be similar to: `curl -X POST -H \"Content-Type: application/json\" -H \"X-Tapis-Token: $JWT\" https://tacc.tapis.io/v3/files/ops/my_system/new_folder -d '{}'` [10]. The `-d '{}'` indicates an empty request body is often sufficient for creating a directory."
+    },
+    {
+      "question_type": "Invalid",
+      "section": "Files",
+      "question": "Does Tapis offer a feature for automatically synchronizing files between local storage and Tapis systems?",
+      "answer": "The provided sources do not explicitly mention a feature for automatically synchronizing files between local storage and Tapis systems. The Files API focuses on listing, uploading, downloading, transferring, and managing permissions [4, 7, 8, 10-17]."
+    },
+    {
+      "question_type": "Conceptual",
+      "section": "Apps",
+      "question": "When a parameter can be defined in a Tapis system definition, an application definition, and a job request, in which of these is the value given the highest precedence during job execution?",
+      "answer": "The value for a parameter specified in a **job request** has the **highest precedence**, overriding values defined in the application definition, which in turn overrides values from the system definition [18]."
+    },
+    {
+      "question_type": "Code Generation",
+      "section": "Apps",
+      "question": "Using the `tapipy` library, write a Python command to retrieve the details of the latest version of the Tapis application with the ID `my_app`.",
+      "answer": "```python\napp_details = t.apps.getAppLatestVersion(appId='my_app')\n``` [19]"
+    },
+    {
+      "question_type": "Code Correction",
+      "section": "Apps",
+      "question": "The following `curl` command is intended to list all applications on the Tapis tenant, but it's not returning any results. `curl -H \"X-Tapis-Token: $JWT\" https://tacc.tapis.io/v3/apps/list`. What is the correct endpoint path for listing applications?",
+      "answer": "The correct endpoint path for listing applications on the Tapis tenant is `/v3/apps` using the **GET** method. The corrected `curl` command would be: `curl -H \"X-Tapis-Token: $JWT\" https://tacc.tapis.io/v3/apps` [20, 21]."
+    },
+    {
+      "question_type": "Invalid",
+      "section": "Apps",
+      "question": "Does Tapis provide a built-in mechanism for automatically scaling the resources allocated to a running application based on its utilization?",
+      "answer": "The provided sources do not describe a built-in mechanism within the Tapis Apps service for automatically scaling resources of a running application based on utilization. The focus is on defining resource requirements at submission time [18, 19, 22, 23]."
+    },
+    {
+      "question_type": "Conceptual",
+      "section": "Jobs",
+      "question": "What are the minimum pieces of information that must be provided when submitting a job for execution using the Tapis Jobs service?",
+      "answer": "At a minimum, the job submission request must specify the **job name**, **application ID**, and **application version** [24]."
+    },
+    {
+      "question_type": "Code Generation",
+      "section": "Jobs",
+      "question": "Assuming you have a Python dictionary named `job_submission` that defines a Tapis job, write a `tapipy` command to submit this job.",
+      "answer": "```python\nsubmitted_job = t.jobs.submitJob(**job_submission)\n``` [24, 25]"
+    },
+    {
+      "question_type": "Code Correction",
+      "section": "Jobs",
+      "question": "You have submitted a Tapis job using `tapipy` and received a response object named `job_info`. You are trying to access the job's unique identifier using `job_info['uuid']`, but this key does not exist. Based on the documentation, what is the correct key to access the job's UUID in the response?",
+      "answer": "Based on the documentation, the correct key to access the unique identifier (UUID) of a Tapis job in the response is likely `jobUuid` [26-28]."
+    },
+    {
+      "question_type": "Invalid",
+      "section": "Jobs",
+      "question": "Does the Tapis Jobs service offer a feature to checkpoint and restart long-running jobs from a specific point of failure?",
+      "answer": "The provided sources do not explicitly describe a built-in checkpointing and restart feature within the Tapis Jobs service. The documentation focuses on job submission, monitoring, and management of output [24, 26, 27, 29-35]."
+    },
+    {
+      "question_type": "Conceptual",
+      "section": "Meta",
+      "question": "What is the primary purpose of the Tapis Meta service?",
+      "answer": "The Tapis PgREST API (referred to as Meta in other documentation) provides a **RESTful interface to a managed SQL-db-as-a-service**, allowing users to interact with tables and rows in those tables [36, 37]."
+    },
+    {
+      "question_type": "Code Generation",
+      "section": "Meta",
+      "question": "Using `curl`, construct a command to create a new document with the JSON payload `{\"name\": \"example\", \"value\": 123}` in the collection named `my_collection` within the database named `my_database`. Assume the base URL is `https://tacc.tapis.io`.",
+      "answer": "```bash\ncurl -v -X POST -H \"Content-Type:application/json\" -H \"X-Tapis-Token:$JWT\" -d '{\"name\": \"example\", \"value\": 123}' https://tacc.tapis.io/v3/meta/my_database/my_collection?basic=true\n``` [38]"
+    },
+    {
+      "question_type": "Code Correction",
+      "section": "Meta",
+      "question": "Your `curl` command to delete a document from a Meta collection is failing with a 405 Method Not Allowed error. The command is `curl -X DELETE -H \"X-Tapis-Token: $JWT\" https://tacc.tapis.io/v3/meta/MyTstDB/MyCollection`. What is likely missing from the URL to specify which document to delete?",
+      "answer": "To delete a specific document, you need to include the **document's ID** in the path. The correct URL would be something like `https://tacc.tapis.io/v3/meta/MyTstDB/MyCollection/<document_id>` [39, 40]."
+    },
+    {
+      "question_type": "Invalid",
+      "section": "Meta",
+      "question": "Does the Tapis Meta service automatically generate and manage database schemas based on the JSON documents ingested?",
+      "answer": "The provided sources describe the Tapis Meta service as a RESTful interface to a managed SQL database [36, 37]. It doesn't explicitly state that the service automatically generates and manages database schemas based on ingested JSON documents. Schema management is typically handled through the underlying SQL database."
+    },
+    {
+      "question_type": "Conceptual",
+      "section": "Pods",
+      "question": "What is the primary goal of the Tapis Pods service?",
+      "answer": "The primary use of the **Tapis Pods Service** is to enable users to quickly **deploy long-lived services based on Docker images** that are exposed via HTTP or TCP endpoints, all running in Kubernetes [40]."
+    },
+    {
+      "question_type": "Code Generation",
+      "section": "Pods",
+      "question": "Based on the general structure of Tapis API endpoints, how would you construct a `curl` command to list all the pod templates available?",
+      "answer": "Assuming the base path for the Pods service is `/v3/pods`, a likely `curl` command to list pod templates would be: `curl -H \"X-Tapis-Token: $JWT\" https://tacc.tapis.io/v3/pods/templates` [41]. Note that the exact endpoint might vary."
+    },
+    {
+      "question_type": "Code Correction",
+      "section": "Pods",
+      "question": "A `curl` command intended to retrieve the logs of a specific pod with ID `my-pod` is failing. The command used is `curl -H \"X-Tapis-Token: $JWT\" https://tacc.tapis.io/v3/pods/logs/my-pod`. Based on the pattern of other Tapis services, what might be missing in the endpoint path?",
+      "answer": "Based on the pattern in other Tapis services, the endpoint path for accessing resources related to a specific pod might require an identifier for the specific type of resource being accessed. For example, it might need to be something like `https://tacc.tapis.io/v3/pods/{pod_id}/logs` or `https://tacc.tapis.io/v3/pods/my-pod/logs` [40]. Without the exact OpenAPI specification for the Pods service, it's difficult to pinpoint the exact correction."
+    },
+    {
+      "question_type": "Invalid",
+      "section": "Pods",
+      "question": "Does the Tapis Pods service offer automatic horizontal pod autoscaling based on CPU utilization?",
+      "answer": "The provided sources describe the Tapis Pods service as a way to manage Kubernetes pods for users [40]. While Kubernetes itself supports Horizontal Pod Autoscaling, the Tapis documentation provided does not explicitly state whether this feature is directly exposed or managed by the Tapis Pods service."
+    },
+    {
+      "question_type": "Conceptual",
+      "section": "Actors",
+      "question": "What is the fundamental purpose of the Tapis Actors service (formerly known as Abaco)?",
+      "answer": "The Tapis Actors service (formerly Abaco) allows users to **register and manage containerized, event-driven compute units called actors** [42, 43]. These actors can **react to events, execute code, and maintain state**, enabling the development of reactive and distributed applications."
+    },
+    {
+      "question_type": "Code Generation",
+      "section": "Actors",
+      "question": "Using the `tapipy` library, write a Python command to send a message with the content `\"Hello Actor\"` to the Tapis actor with the ID `my_actor_id`.",
+      "answer": "```python\nt.actors.send_message(actor_id='my_actor_id', request_body={'message': 'Hello Actor'})\n``` [44]"
+    },
+    {
+      "question_type": "Code Correction",
+      "section": "Actors",
+      "question": "You are trying to retrieve the details of an actor using `tapipy` with the following command: `actor_details = t.actors.get(actor_id='my_actor')`. However, this is resulting in an error. What is the likely correct method name to retrieve actor details?",
+      "answer": "The likely correct method name to retrieve the details of an actor using `tapipy` is `t.actors.get_actor(actor_id='my_actor')` [42, 43]."
+    },
+    {
+      "question_type": "Invalid",
+      "section": "Actors",
+      "question": "Does the Tapis Actors service support direct inter-actor communication using a publish-subscribe model?",
+      "answer": "While Tapis Actors can interact via messages and events, the provided sources do not explicitly detail a direct inter-actor communication mechanism using a publish-subscribe model. Communication typically involves sending messages to specific actor instances [44]."
+    },
+    {
+      "question_type": "Conceptual",
+      "section": "Security",
+      "question": "According to the documentation, what are the three primary permission types that can be granted to a user for an application within the Tapis Security Kernel?",
+      "answer": "The three primary permission types that can be granted to a user for an application in the Tapis Security Kernel are **READ**, **MODIFY**, and **EXECUTE** [45]."
+    },
+    {
+      "question_type": "Code Generation",
+      "section": "Security",
+      "question": "Using `curl`, construct a command to retrieve the definition of the Tapis Security Kernel role named `data_reader`. Assume the Tapis tenant ID is `tacc`.",
+      "answer": "```bash\ncurl -H \"X-Tapis-Token: $JWT\" \"https://tacc.tapis.io/v3/security/role/data_reader?tenant=tacc\"\n``` [46]"
+    },
+    {
+      "question_type": "Code Correction",
+      "section": "Security",
+      "question": "You are attempting to grant a user a specific permission on an application using `tapipy`. The command you are using is `t.security.grant_permission(appId='my_app', user='testuser', perm='READ')`. Based on the API documentation, what is a more likely method name for granting user permissions?",
+      "answer": "Based on the API documentation, the more likely method name for granting user permissions on an application is `t.apps.grantUserPerms(appId='my_app', request_body={'user': 'testuser', 'perms': ['READ']})` [45]."
+    },
+    {
+      "question_type": "Invalid",
+      "section": "Security",
+      "question": "Does Tapis Security Kernel support the creation of permission groups that can then be assigned to users?",
+      "answer": "The provided sources focus on the management of roles and permissions directly assigned to users [46-68]. The concept of permission groups is not explicitly mentioned."
+    },
+    {
+      "question_type": "Conceptual",
+      "section": "Streams",
+      "question": "Starting from the highest level, what is the hierarchy of resources managed by the Tapis Streams API?",
+      "answer": "The hierarchy of resources in the Tapis Streams API starts with **Projects**, which contain **Sites**, which in turn contain **Instruments**, and finally, **Instruments** have **Variables** [69-71]."
+    },
+    {
+      "question_type": "Code Generation",
+      "section": "Streams",
+      "question": "Using `tapipy`, write a Python command to create a new instrument with the ID `sensor_1`, name `Temperature Sensor`, and description `Measures temperature` within the project `my_project` and site `my_site`.",
+      "answer": "```python\nt.streams.create_instrument(project_id='my_project', site_id='my_site', request_body=[{'inst_id': 'sensor_1', 'inst_name': 'Temperature Sensor', 'inst_description': 'Measures temperature'}])\n``` [72, 73]"
+    },
+    {
+      "question_type": "Code Correction",
+      "section": "Streams",
+      "question": "Your `curl` command to update the description of a site is failing with a 404 Not Found error. The command is `curl -X PUT -H \"Content-Type: application/json\" -H \"X-Tapis-Token: $JWT\" -d '{\"description\": \"Updated site description\"}' https://tacc.tapis.io/v3/streams/sites/my_site`. What is likely missing in the endpoint path?",
+      "answer": "The endpoint path likely needs to include the **project ID** to which the site belongs. The corrected `curl` command would be similar to: `curl -X PUT -H \"Content-Type: application/json\" -H \"X-Tapis-Token: $JWT\" -d '{\"description\": \"Updated site description\"}' https://tacc.tapis.io/v3/streams/projects/my_project/sites/my_site` [69]."
+    },
+    {
+      "question_type": "Invalid",
+      "section": "Streams",
+      "question": "Does the Tapis Streams API provide functionality for real-time streaming of data from instruments?",
+      "answer": "The provided sources for the Tapis Streams API focus on the management of metadata related to projects, sites, instruments, and variables [69-85]. There is no explicit mention of real-time data streaming capabilities within this API."
+    },
+    {
+      "question_type": "Conceptual",
+      "section": "Workflows",
+      "question": "What is the role of Tapis Workflows Groups in the context of Tapis ETL pipelines?",
+      "answer": "**Tapis Workflows Groups** are used by **Tapis ETL** to **manage access (creating, deleting, running) ETL Pipelines** [86]."
+    },
+    {
+      "question_type": "Code Generation",
+      "section": "Workflows",
+      "question": "Using `curl`, construct a command to create a new ETL pipeline within the Tapis Workflows Group with the ID `my_group`. Assume the pipeline definition is in a JSON file named `pipeline.json`.",
+      "answer": "```bash\ncurl -X POST -H \"Content-Type: application/json\" -H \"X-Tapis-Token: $JWT\" -d @pipeline.json https://tacc.tapis.io/v3/workflows/groups/my_group/pipelines\n``` [86-88]"
+    },
+    {
+      "question_type": "Code Correction",
+      "section": "Workflows",
+      "question": "When defining a task in a Tapis Workflow, you can specify its `type`. According to the documentation, what are some example values for the `type` attribute of a task?",
+      "answer": "According to the documentation, some example values for the `type` attribute of a task in Tapis Workflows include `function`, `tapis_job`, and `TapisActorTask` [89]."
+    },
+    {
+      "question_type": "Invalid",
+      "section": "Workflows",
+      "question": "Does Tapis Workflows provide a graphical user interface for designing and monitoring ETL pipelines?",
+      "answer": "The provided sources describe the Tapis Workflows and ETL APIs and their programmatic interfaces (using `curl` and `tapipy`) [86-97]. There is no mention of a built-in graphical user interface for designing or monitoring these pipelines."
+    },
+    {
+      "question_type": "Conceptual",
+      "section": "Notifications",
+      "question": "What are the currently supported methods for delivering notifications in Tapis?",
+      "answer": "The supported delivery methods for notifications in Tapis, as mentioned in the documentation, are **WEBHOOK** and **EMAIL** [36]."
+    },
+    {
+      "question_type": "Code Generation",
+      "section": "Notifications",
+      "question": "Using `curl`, construct a command to retrieve a list of all notification subscriptions owned by the authenticated user.",
+      "answer": "```bash\ncurl -H \"X-Tapis-Token: $JWT\" https://tacc.tapis.io/v3/notifications/subscriptions\n``` [98]"
+    },
+    {
+      "question_type": "Code Correction",
+      "section": "Notifications",
+      "question": "You are trying to delete a notification subscription using `tapipy` with the method `t.notifications.remove(uuid='<subscription_uuid>')`. Based on the OpenAPI specification, what is the correct method name for deleting a subscription?",
+      "answer": "Based on the OpenAPI specification, the correct method name for deleting a notification subscription is likely `t.notifications.deleteSubscription(uuid='<subscription_uuid>')` [98]."
+    },
+    {
+      "question_type": "Invalid",
+      "section": "Notifications",
+      "question": "Does Tapis Notifications service support sending SMS messages for event notifications?",
+      "answer": "The provided sources for the Tapis Notifications API specify **WEBHOOK** and **EMAIL** as the supported delivery methods [36]. There is no mention of SMS message delivery."
+    },
+    {
+      "question_type": "Conceptual",
+      "section": "Sharing",
+      "question": "According to the documentation, what are some types of Tapis resources that can be shared?",
+      "answer": "The documentation mentions that **Applications** and **Files** can be shared within the Tapis ecosystem [99]."
+    },
+    {
+      "question_type": "Code Generation",
+      "section": "Sharing",
+      "question": "Using `curl`, construct a command to list all the Tapis resource shares that are visible to the currently authenticated user.",
+      "answer": "```bash\ncurl -H \"X-Tapis-Token: $JWT\" https://tacc.tapis.io/v3/shares\n``` [50]"
+    },
+    {
+      "question_type": "Code Correction",
+      "section": "Sharing",
+      "question": "You are trying to create a new share using `tapipy` with the method `t.shares.create(share_definition)`. Based on the API documentation, what is a more likely method name for creating a share?",
+      "answer": "Based on the API documentation, a more likely method name for creating a share is `t.share.shareResource(request_body=share_definition)` [51]."
+    },
+    {
+      "question_type": "Invalid",
+      "section": "Sharing",
+      "question": "Does Tapis provide a feature to automatically share resources with all members of a specific Tapis tenant?",
+      "answer": "The provided sources describe explicit sharing of resources [51, 99]. There is no mention of an automatic sharing feature with all members of a tenant; sharing typically involves specifying individual users or contexts."
+    },
+    {
+      "question_type": "Conceptual",
+      "section": "PythonDev",
+      "question": "How is the `tapipy` Python library generated, and what is a key benefit of this generation process?",
+      "answer": "The `tapipy` library is **automatically generated by referencing the OpenAPI spec files** from TACC’s Tapis services [99]. A key benefit of this is that it provides users with a **'live' library** that has **up-to-date syntax for all Tapis services**, automatic token refreshing, and verbose error messages."
+    },
+    {
+      "question_type": "Code Generation",
+      "section": "PythonDev",
+      "question": "Write the Python code using `tapipy` to initialize a `Tapis` client object connected to the base URL `https://dev.develop.tapis.io`, authenticating with the username `myuser` and password `mypassword`.",
+      "answer": "```python\nfrom tapipy.tapis import Tapis\nt = Tapis(base_url='https://dev.develop.tapis.io', username='myuser', password='mypassword')\nt.get_tokens()\n``` [2, 3, 43, 100]"
+    },
+    {
+      "question_type": "Code Correction",
+      "section": "PythonDev",
+      "question": "A Python script using `tapipy` starts with the import statement `import tapis`. When trying to create a `Tapis` client object, it results in an error. What is the correct way to import the `Tapis` class from the `tapipy` library?",
+      "answer": "The correct way to import the `Tapis` class from the `tapipy` library is `from tapipy.tapis import Tapis` [2, 3, 43, 100, 101]."
+    },
+    {
+      "question_type": "Invalid",
+      "section": "PythonDev",
+      "question": "Does the `tapipy` library include built-in support for automatically generating client-side documentation from the OpenAPI specifications?",
+      "answer": "The provided sources describe `tapipy` as being generated from OpenAPI specifications and offering features like automatic token refreshing and up-to-date syntax [99]. However, it does not explicitly state whether `tapipy` has built-in functionality for automatically generating client-side documentation beyond the library itself reflecting the API."
+    }
+  ]
