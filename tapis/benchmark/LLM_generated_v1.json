@@ -15,7 +15,7 @@
       "type": "code_correction",
       "question": "The following Python code using `tapipy` is intended to list files on a Tapis system but is throwing an error. Identify and correct the error in the code.\n\n```python\nfrom tapipy.tapis import Tapis\n\n# Assuming 't' is an authenticated Tapis client object\nt.files.list_files(systemId='mySystem', path='/home/user')\n```",
       "answer": "The error in the code is that the `tapipy` method for listing files is **`listFiles()`** (with a capital 'F'), not `list_files()` (with a lowercase 'f').\n\nHere is the corrected code:\n\n```python\nfrom tapipy.tapis import Tapis\n\n# Assuming 't' is an authenticated Tapis client object\nt.files.listFiles(systemId='mySystem', path='/home/user')\n```\n**Explanation:** `tapipy` method names generally follow camel-case conventions. The correct method to list files under the `t.files` resource is `listFiles()` [3].",
-      "reference": "The error in the code is that the `tapipy` method for listing files is **`listFiles()`Here is the corrected code:\n\n```python\nfrom tapipy.tapis import Tapis\n\n# Assuming 't' is an authenticated Tapis client object\nt.files.listFiles(systemId='mySystem', path='/home/user')\n```\n**Explanation:** `tapipy` method names generally follow camel-case conventions. The correct method to list files under the `t.files` resource is `listFiles()` [3]."
+      "reference": "To list files with Tapis use listFiles() Here is the corrected code:\n\n```python\nfrom tapipy.tapis import Tapis\n\n# For an authenticated Tapis client object t \nt.files.listFiles(systemId='mySystem', path='/home/<user>')\n```\n"
     },
     {
       "type": "invalid",
@@ -33,8 +33,8 @@
       "type": "code_generation",
       "question": "Using `tapipy`, write Python code to **retrieve the details of a specific Tapis application** given its `appId` (e.g., 'my-app') and assuming you have an authenticated `Tapis` client object named `t`.",
       "answer": "```python\napp_id = 'my-app'\n\ntry:\n    app_details = t.apps.getAppLatestVersion(appId=app_id)\n    print(app_details)\nexcept Exception as e:\n    print(f\"Error retrieving application details: {e}\")\n```\n**Explanation:** The `getAppLatestVersion()` method within the `t.apps` resource is used to fetch the details of the specified application. You only need to provide the `appId` [5].",
-      "reference":"To retrieve details for a specific application, with Python SDK use ```python\napp_id = 'my-app'\n\ntry:\n    app_details = t.apps.getAppLatestVersion(appId=app_id)\n    print(app_details)\nexcept Exception as e:\n    print(f\"Error retrieving application details: {e}\")\n```\n**Explanation:** The `getAppLatestVersion()` method within the `t.apps` resource is used to fetch the details of the specified application. You only need to provide the `appId` [5]."
-    },
+      "reference":"To retrieve details for a specific application, with Python SDK use:\n\n```python\napp_id = 'my-app'\n\napp_details = t.apps.getAppLatestVersion(appId=app_id)\n\nprint(app_details)\n```\n**Explanation:** The `getAppLatestVersion()` method within the `t.apps` resource is used to fetch the details of the specified application. You only need to provide the `appId`."
+      },
     {
       "type": "code_correction",
       "question": "The following `tapipy` code aims to submit a Tapis job but seems to have an issue with how the application ID is being passed. Identify and correct the code.\n\n```python\njob_definition = {\n    'name': 'my-test-job',\n    'app': 'my-app',\n    'version': '0.1',\n    # ... other job parameters\n}\n\nt.jobs.submitJob(body=job_definition)\n```",
