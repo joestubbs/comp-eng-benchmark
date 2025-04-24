@@ -1,0 +1,125 @@
+[
+    {
+      "type": "conceptual",
+      "question": "What is a **Tapis tenant**, and what is its significance in the Tapis ecosystem?",
+      "answer": "**A Tapis tenant** is a self-contained instance of the Tapis platform [1, 2]. It represents an organizational unit or deployment of Tapis, often associated with a specific institution or user community, like the 'tacc' tenant hosted at TACC [1, 2]. Each tenant has its own set of users, resources, and security policies, providing isolation and management within the broader Tapis framework [2].",
+      "reference":"A Tapis tenant is a logically isolated view of Tapis objects (i.e., the systems, files, actors, etc.). Each tenant has a base url with which to access the tenant"
+    },
+    {
+      "type": "code_generation",
+      "question": "Write a Python code snippet using the `tapipy` library to **authenticate with a Tapis tenant** given a base URL, username, and password, and then print the **access token**.",
+      "answer": "```python\nfrom tapipy.tapis import Tapis\n\n# Replace with your Tapis tenant base URL, username, and password\nbase_url = 'https://your.tapis.io'\nusername = 'your_username'\npassword = 'your_password'\n\ntry:\n    # Initialize the Tapis client\n    t = Tapis(base_url=base_url, username=username, password=password)\n\n    # Get the Tapis tokens\n    t.get_tokens()\n\n    # Print the access token\n    print(\"Access Token:\", t.access_token.access_token)\n\nexcept Exception as e:\n    print(f\"An error occurred: {e}\")\n```\n**Explanation:** This code initializes a `Tapis` client object with the necessary credentials and then calls the `get_tokens()` method to retrieve the authentication tokens, including the access token, which is then printed [108, 110, previous conversation].",
+      "reference": "```python\nfrom tapipy.tapis import Tapis\n\n# Replace with your Tapis tenant base URL, username, and password\nbase_url = 'https://your.tapis.io'\nusername = 'your_username'\npassword = 'your_password'\n\ntry:\n    # Initialize the Tapis client\n    t = Tapis(base_url=base_url, username=username, password=password)\n\n    # Get the Tapis tokens\n    t.get_tokens()\n\n    # Print the access token\n    print(\"Access Token:\", t.access_token.access_token)\n\nexcept Exception as e:\n    print(f\"An error occurred: {e}\")\n```\n**Explanation:** This code initializes a `Tapis` client object with the necessary credentials and then calls the `get_tokens()` method to retrieve the authentication tokens, including the access token, which is then printed [108, 110, previous conversation]."
+    },
+    {
+      "type": "code_correction",
+      "question": "The following Python code using `tapipy` is intended to list files on a Tapis system but is throwing an error. Identify and correct the error in the code.\n\n```python\nfrom tapipy.tapis import Tapis\n\n# Assuming 't' is an authenticated Tapis client object\nt.files.list_files(systemId='mySystem', path='/home/user')\n```",
+      "answer": "The error in the code is that the `tapipy` method for listing files is **`listFiles()`** (with a capital 'F'), not `list_files()` (with a lowercase 'f').\n\nHere is the corrected code:\n\n```python\nfrom tapipy.tapis import Tapis\n\n# Assuming 't' is an authenticated Tapis client object\nt.files.listFiles(systemId='mySystem', path='/home/user')\n```\n**Explanation:** `tapipy` method names generally follow camel-case conventions. The correct method to list files under the `t.files` resource is `listFiles()` [3].",
+      "reference": "The error in the code is that the `tapipy` method for listing files is **`listFiles()`Here is the corrected code:\n\n```python\nfrom tapipy.tapis import Tapis\n\n# Assuming 't' is an authenticated Tapis client object\nt.files.listFiles(systemId='mySystem', path='/home/user')\n```\n**Explanation:** `tapipy` method names generally follow camel-case conventions. The correct method to list files under the `t.files` resource is `listFiles()` [3]."
+    },
+    {
+      "type": "invalid",
+      "question": "Does Tapis have a built-in service for **managing virtual machine instances**?",
+      "answer": "Based on the provided sources, there is no mention of a specific built-in Tapis service dedicated to managing virtual machine instances directly. Tapis focuses on managing systems, applications, jobs, files, and other high-level computational resources and workflows [e.g., 16, 28, 87, 102].",
+      "reference": "No"
+    },
+    {
+      "type": "conceptual",
+      "question": "When creating a **Tapis system**, what is the purpose of the **`rootDir`** attribute, and why is defining it correctly critical?",
+      "answer": "The **`rootDir`** attribute of a Tapis system defines the **effective root directory** when referencing file paths through the Tapis Files or Jobs services [4]. It acts as the starting point for all relative paths used in operations like listing, copying, moving, and creating directories [4]. Defining it correctly is critical because all file paths within Tapis are interpreted relative to this directory. An incorrect `rootDir` will lead to Tapis being unable to locate the intended files and directories [4].",
+      "reference":"Directory to be used when listing files or moving files to and from the system. All paths are relative to this directory when using Files to list, copy, move, mkdir, etc. Once set, root dir cannot be changed by the owner"
+    },
+    {
+      "type": "code_generation",
+      "question": "Using `tapipy`, write Python code to **retrieve the details of a specific Tapis application** given its `appId` (e.g., 'my-app') and assuming you have an authenticated `Tapis` client object named `t`.",
+      "answer": "```python\napp_id = 'my-app'\n\ntry:\n    app_details = t.apps.getAppLatestVersion(appId=app_id)\n    print(app_details)\nexcept Exception as e:\n    print(f\"Error retrieving application details: {e}\")\n```\n**Explanation:** The `getAppLatestVersion()` method within the `t.apps` resource is used to fetch the details of the specified application. You only need to provide the `appId` [5].",
+      "reference":"To retrieve details for a specific application, with Python SDK use ```python\napp_id = 'my-app'\n\ntry:\n    app_details = t.apps.getAppLatestVersion(appId=app_id)\n    print(app_details)\nexcept Exception as e:\n    print(f\"Error retrieving application details: {e}\")\n```\n**Explanation:** The `getAppLatestVersion()` method within the `t.apps` resource is used to fetch the details of the specified application. You only need to provide the `appId` [5]."
+    },
+    {
+      "type": "code_correction",
+      "question": "The following `tapipy` code aims to submit a Tapis job but seems to have an issue with how the application ID is being passed. Identify and correct the code.\n\n```python\njob_definition = {\n    'name': 'my-test-job',\n    'app': 'my-app',\n    'version': '0.1',\n    # ... other job parameters\n}\n\nt.jobs.submitJob(body=job_definition)\n```",
+      "answer": "The issue is that the application ID should be specified using the key **`appId`**, not just `'app'`, in the job definition dictionary.\n\nHere is the corrected code:\n\n```python\njob_definition = {\n    'name': 'my-test-job',\n    'appId': 'my-app',\n    'version': '0.1',\n    # ... other job parameters\n}\n\nt.jobs.submitJob(body=job_definition)\n```\n**Explanation:** The Tapis Jobs API expects the application ID to be provided with the key `appId` in the job submission request body [6].",
+      "reference":"Change the key `'app'` to key **`appId`** in your job definition"
+    },
+    {
+      "type": "invalid",
+      "question": "Does the Tapis Meta API support querying data using **SQL**?",
+      "answer": "No, the Tapis Meta API, as described in the sources, provides access to a **MongoDB database** [7]. MongoDB uses its own query language, not SQL, for data manipulation and retrieval.",
+      "reference": "No"
+    },
+    {
+      "type": "conceptual",
+      "question": "What is the primary purpose of the **Tapis Security Kernel (SK)**?",
+      "answer": "The primary purpose of the **Tapis Security Kernel (SK)** is to provide **security-related functions** within the Tapis platform [2]. While the exact functionalities aren't exhaustively detailed in these excerpts, it is responsible for aspects like managing permissions, authentication rules (as indicated by the 'authenticator' link in the tenant description [2]), and potentially handling secrets and authorization across Tapis services.",
+      "reference":"The Security Kernel (SK) microservice provides role-based authorization and secrets management for Tapis. Authentication is based on JSON Web Tokens (JWTs) managed by the Authentication subsystem."
+    },
+    {
+      "type": "code_generation",
+      "question": "Assuming you have an authenticated `tapipy` client `t`, write Python code to **create a new Actor** with the image 'abacosamples/test', name 'my_actor', and description 'A test actor'.",
+      "answer": "```python\nactor_definition = {\n    'image': 'abacosamples/test',\n    'name': 'my_actor',\n    'description': 'A test actor'\n}\n\ntry:\n    new_actor = t.actors.create_actor(**actor_definition)\n    print(new_actor)\nexcept Exception as e:\n    print(f\"Error creating actor: {e}\")\n```\n**Explanation:** The `create_actor()` method under the `t.actors` resource is used to register a new actor. The actor's properties are passed as keyword arguments [8, 9].",
+      "reference": "```python\nmy_actor = {\n 'image': 'user/my_actor', \n 'name': 'word_counter', \n 'description': 'Actor that counts words.' \n}\n\ntry:\n    new_actor=  t.actors.create_actor(**my_actor)\n print(new_actor)\nexcept Exception as e:\n print(f\"Error creating actor: {e}\")\n```\n**Explanation:** The `create_actor()` method under the `t.actors` resource is used to register a new actor. The actor's properties are passed as keyword arguments [8, 9]."
+     
+    },
+    {
+      "type": "code_correction",
+      "question": "The following `tapipy` code attempts to list all PostIts visible to the authenticated user but is not working as expected. Correct the method call.\n\n```python\npostits = t.files.listPostIts(list_type='ALL')\n```",
+      "answer": "The correct parameter name for specifying the list type when listing PostIts is **`listType`** (camel case), not `list_type` (snake case).\n\nHere is the corrected code:\n\n```python\npostits = t.files.listPostIts(listType='ALL')\n```\n**Explanation:** Tapis API parameters, and thus `tapipy` keyword arguments, generally follow camel case. To list all visible PostIts, the `listType` parameter should be set to 'ALL' [10-12].",
+      "reference":"The correct parameter name for specifying the list type when listing PostIts is **`listType`** (camel case), not `list_type` (snake case).\n\nHere is the corrected code:\n\n```python\npostits = t.files.listPostIts(listType='ALL')\n```\n**Explanation:** Tapis API parameters, and thus `tapipy` keyword arguments, generally follow camel case. To list all visible PostIts, the `listType` parameter should be set to 'ALL' [10-12]."
+
+    },
+    {
+      "type": "invalid",
+      "question": "Does Tapis have a dedicated service for **managing network configurations** for its resources?",
+      "answer": "Based on the provided documentation, there is no specific, standalone Tapis service explicitly focused on managing low-level network configurations. Network management is likely handled within the underlying infrastructure and potentially abstracted by services like Pods [13], but a dedicated 'network management' service is not evident.",
+      "reference":"No"
+    },
+    {
+      "type": "conceptual",
+      "question": "In Tapis Streams, what is the hierarchical relationship between **Projects, Sites, Instruments, and Variables**?",
+      "answer": "In Tapis Streams, the hierarchy is as follows: A **Project** is at the top level and can contain one or more **Sites**. Each **Site** represents a geographical location and can host one or more **Instruments**. Finally, each **Instrument** can have multiple **Variables** associated with it, representing the data being measured or observed [14-17].",
+      "reference":"Projects are defined at a top level in the hierarchy of Streams resources. Sites are next in the streams hierarchy and they inherit permissions from the projects.Next in the hierarchy are Instruments followed by Variables"
+    },
+    {
+      "type": "code_generation",
+      "question": "Using `tapipy`, and assuming you have an authenticated client `t`, write Python code to **list all tenants** registered with the Tapis platform.",
+      "answer": "```python\ntry:\n    tenants = t.tenants.list_tenants()\n    print(tenants)\nexcept Exception as e:\n    print(f\"Error listing tenants: {e}\")\n```\n**Explanation:** The `list_tenants()` method within the `t.tenants` resource is used to retrieve a list of all registered Tapis tenants [2].",
+      "reference":"```python\n   tenants = t.tenants.list_tenants()\n "
+    },
+    {
+      "type": "code_correction",
+      "question": "The following `tapipy` code aims to retrieve a list of jobs but has an incorrect parameter name for limiting the number of results. Identify and correct the error.\n\n```python\njobs = t.jobs.getJobs(max=10)\n```",
+      "answer": "The correct parameter name for limiting the number of returned items in `tapipy` (and in the Tapis Jobs API) is **`limit`**, not `max`.\n\nHere is the corrected code:\n\n```python\njobs = t.jobs.getJobs(limit=10)\n```\n**Explanation:** Consistent with other Tapis API endpoints that support pagination, the parameter for setting the maximum number of results per page is `limit` [10, 18, 19].",
+      "reference": "Use parameter `limit` instead of `max`"
+    },
+    {
+      "type": "invalid",
+      "question": "Does Tapis have a feature for **direct integration with blockchain technologies**?",
+      "answer": "Based on the provided sources, there is no mention of a built-in feature or service within Tapis that directly integrates with blockchain technologies.",
+      "reference":"No"
+    },
+    {
+      "type": "conceptual",
+      "question": "What are the possible values for the **`DeliveryMethod`** in Tapis Notifications, and what do they signify?",
+      "answer": "The possible values for **`DeliveryMethod`** in Tapis Notifications, as defined in the schema, are **`WEBHOOK`** and **`EMAIL`** [20]. **`WEBHOOK`** signifies that notifications will be sent to a specified HTTP or HTTPS endpoint, while **`EMAIL`** indicates that notifications will be sent to a provided email address.",
+      "reference":"A service can create a subscription for an event type in order to allow users and services to receive events. Two delivery methods are supported, WEBHOOK and EMAIL."
+    },
+    {
+      "type": "code_generation",
+      "question": "Assuming you have an authenticated `tapipy` client `t`, write Python code to **create a PostIt** for a file on a Tapis system with `systemId` 'mySystem' and `path` '/data/myFile.txt', allowing unlimited uses.",
+      "answer": "```python\nsystem_id = 'mySystem'\nfile_path = '/data/myFile.txt'\n\ntry:\n    postit_response = t.files.createPostIt(systemId=system_id, path=file_path, allowedUses=-1)\n    print(postit_response)\nexcept Exception as e:\n    print(f\"Error creating PostIt: {e}\")\n```\n**Explanation:** The `createPostIt()` method in `t.files` is used to create a new PostIt. The `allowedUses` parameter set to -1 indicates unlimited uses [21].",
+      "reference": "```python\nsystem_id = 'mySystem'\nfile_path = '/data/myFile.txt'\n\ntry:\n    postit_response = t.files.createPostIt(systemId=system_id, path=file_path, allowedUses=-1)\n    print(postit_response)\nexcept Exception as e:\n    print(f\"Error creating PostIt: {e}\")\n```\n**Explanation:** The `createPostIt()` method in `t.files` is used to create a new PostIt. The `allowedUses` parameter set to -1 indicates unlimited uses [21]."
+    },
+    {
+      "type": "code_correction",
+      "question": "The following `tapipy` code attempts to list applications and sort them by ID in descending order, but the sorting doesn't seem to be applied correctly. Identify and fix the issue.\n\n```python\napps = t.apps.listApps(orderby='id desc')\n```",
+      "answer": "The correct parameter name for specifying the sorting order in `tapipy`'s `listApps()` method is **`orderBy`** (camel case), and the direction should be specified within parentheses after the attribute name.\n\nHere is the corrected code:\n\n```python\napps = t.apps.listApps(orderBy='id(desc)')\n```\n**Explanation:** The `orderBy` parameter in `tapipy` follows the format `<attribute_name>(<direction>)`, where `<direction>` can be 'asc' for ascending or 'desc' for descending [10, 22].",
+      "reference": "For sorting Ascending use ```python\norderBy=id(asc)```"
+    },
+    {
+      "type": "invalid",
+      "question": "Does Tapis have a dedicated service for **managing DNS records**?",
+      "answer": "Based on the provided sources, there is no mention of a specific Tapis service designed for managing DNS records.",
+      "reference": "No"
+
+    }
+  ]
