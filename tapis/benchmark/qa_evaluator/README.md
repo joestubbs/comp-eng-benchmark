@@ -1,4 +1,4 @@
-This is an evaluator module that comptes the BLEU, Rouge and code-bert-scores for Tapis Q/A.
+This is an evaluator module that computes the BLEU, Rouge and code-bert-scores for Tapis Q/A.
 In order to run the script, cd into the comp-eng-benchmark/tapis/benchmark/qa_evaluator and run 
 ```
 python scripts/run_evaluation.py
