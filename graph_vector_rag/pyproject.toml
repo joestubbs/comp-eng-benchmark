@@ -1,0 +1,24 @@
+[project]
+name = "graph-vector-rag"
+version = "0.1.0"
+description = "Graph Vector RAG Application"
+authors = [
+    {name = "Smruti Padhy",email = "spadhy@tacc.utexas.edu"}
+]
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "langchain (>=0.3.24,<0.4.0)",
+    "numpy (>=2.2.5,<3.0.0)",
+    "python-dotenv (>=1.1.0,<2.0.0)",
+    "requests (>=2.32.3,<3.0.0)",
+    "jupyter (>=1.1.1,<2.0.0)",
+    "neo4j (>=5.28.1,<6.0.0)",
+    "llmsherpa (>=0.1.4,<0.2.0)",
+    "pandas (>=2.2.3,<3.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
