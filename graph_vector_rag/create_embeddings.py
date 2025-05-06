@@ -93,8 +93,47 @@ def create_embeddings_pdf(property):
         print("Processed " + str(count) + " " + "Chunk" + " nodes for property @" + property + ".")
         return count
 
+
+def create_embeddings_pdf(label, property):
+    vector_index_on_node = config["vector_index_on_node"]
+    embedding_nodel_label = config["embedding"]["node_label"]
+    embedding_model = config["embedding"]["model"]
+
+    # openai_client = OpenAI (api_key = OPENAI_API_KEY)
+    driver = GraphDatabase.driver(uri=config["neo4j_url"], database=config["neo4j_database"],
+                                  auth=(config["neo4j_user"], config["neo4j_password"]))
+    with driver.session() as session:
+        # get chunks in document, together with their section titles
+        result = session.run(
+            f"MATCH (ch:{label}) -[:HAS_PARENT]-> (s:Section) RETURN elementId(ch) AS id, s.title + ' >> ' + ch.{property} AS text")
+
+        # create embeddings for the property of a node
+        # for each node, update the embedding property
+        count = 0
+        for record in result:
+            id = record["id"]
+            text = record["text"]
+
+            # For better performance, text can be batched
+            # embedding = get_embedding(openai_client, text, embedding_model) ## <-- embedding  model
+            embeddings = get_embedding_for_provider()
+            embedding = embeddings.embed_query(text)
+
+            # key property of Embedding node differentiates different embeddings
+            cypher = "CREATE (e:Embedding) SET e.key=$key, e.value=$embedding"
+            cypher = cypher + " WITH e MATCH (n) WHERE elementId(n) = $id CREATE (n) -[:HAS_EMBEDDING]-> (e)"
+            session.run(cypher, key=property, embedding=embedding, id=id)
+            count = count + 1
+
+        session.close()
+
+        print("Processed " + str(count) + " " + "Chunk" + " nodes for property @" + property + ".")
+        return count
+
 if __name__ == '__main__':
         
      initializeVectorIndex()
-     create_embeddings_pdf("sentences")
+     #create_embeddings_pdf("sentences")
+     create_embeddings_pdf("Chunk","sentences")
+     create_embeddings_pdf("Table", "name")
     
