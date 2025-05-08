@@ -22,6 +22,11 @@ def main():
         print("Prediction:", r["prediction"])
         print("Reference:", r["reference"])
         print("BLEU:", round(r["bleu"], 4), "| ROUGE-L:", round(r["rouge-l"], 4), "| CodeBERT:", r["codebert"])
+        # Uncomment this line for getting LLM score
+        #print("BLEU:", round(r["bleu"], 4), "| ROUGE-L:", round(r["rouge-l"], 4), "| CodeBERT:", r["codebert"],"| LLM_as_judge:", r["llm_score"])
+
+  
+
 
 if __name__ == "__main__":
     main()
