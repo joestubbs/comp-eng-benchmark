@@ -13,9 +13,24 @@ import re
 from openai import OpenAI
 
 load_dotenv()  # Loads variables from .env into environment
+
+# set OLLAMA base URL if running locally
+ollama_base_url = os.getenv("OLLAMA_BASE_URL")
+
 openai.api_key = os.getenv("OPENAI_API_KEY") # set up OPENAPI key
-#print(openai.api_key)
-client = OpenAI()
+
+use_ollama = os.getenv("use_ollama")
+
+use_llm_judge = os.getenv("use_llm_judge")
+
+if use_ollama:
+    client = OpenAI(
+        base_url=ollama_base_url,
+        api_key="ollama"  
+    )
+else:
+    openai.api_key = openai.api_key
+    client = OpenAI() 
 
 # Download necessary NLTK data
 nltk.download("punkt", quiet=True)
@@ -38,14 +53,18 @@ class QAEvaluator:
             "Respond only with: Score: X\nExplanation: ..."
         )
 
+        model_name = "llama3.1:8b" if use_ollama else "gpt-4"
+
+        # todo: parameterize by the 1. model, ollama  2. have a boolean for RUN LLM as Judge, by default TRUE and default to ollama 
         try:
+            print(model_name)
             response = client.chat.completions.create(
-                model="gpt-4",
+                model=model_name,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.0,
             )
-
             reply = response.choices[0].message.content
+            #reply = response.choices[0].message.content  # OpenAI style
             score_match = re.search(r"Score:\s*(\d+)", reply)
             score = int(score_match.group(1)) if score_match else None
             return score, reply
@@ -96,11 +115,11 @@ class QAEvaluator:
         for i, r in enumerate(results):
             r["codebert"] = pred_results[0][i]  # Extracting codebert score for each result
         
-          # LLM scoring uncomment this, causes a charge on the OPEN-API account
-        # for r in results:
-        #     score, explanation = self.ask_llm(r["question"], r["prediction"], r["reference"])
-        #     r["llm_score"] = score
-        #     r["llm_explanation"] = explanation
+        if use_llm_judge:
+            for r in results:
+                score, explanation = self.ask_llm(r["question"], r["prediction"], r["reference"])
+                r["llm_score"] = score
+                r["llm_explanation"] = explanation
 
         return results
 
