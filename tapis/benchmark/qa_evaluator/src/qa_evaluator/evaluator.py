@@ -14,34 +14,25 @@ from openai import OpenAI
 
 load_dotenv()  # Loads variables from .env into environment
 
-# set OLLAMA base URL if running locally
-ollama_base_url = os.getenv("OLLAMA_BASE_URL")
-
-openai.api_key = os.getenv("OPENAI_API_KEY") # set up OPENAPI key
-
-use_ollama = os.getenv("use_ollama")
-
-use_llm_judge = os.getenv("use_llm_judge")
-
-if use_ollama:
-    client = OpenAI(
-        base_url=ollama_base_url,
-        api_key="ollama"  
-    )
-else:
-    openai.api_key = openai.api_key
-    client = OpenAI() 
-
 # Download necessary NLTK data
 nltk.download("punkt", quiet=True)
 
 # Define a class to evaluate QA performance using BLEU, ROUGE, and CodeBERT
 class QAEvaluator:
-    def __init__(self):
+    def __init__(self, model_name="gpt-4", use_llm_judge=True, use_ollama=False):
         # Initialize ROUGE scorer
+        self.model_name = model_name
+        self.use_llm_judge = use_llm_judge
         self.rouge = Rouge()
         # Smoothing function for BLEU score
         self.smooth = SmoothingFunction().method1
+        # Create OpenAI/Ollama client
+        if use_ollama:
+            base_url = os.getenv("OLLAMA_BASE_URL")
+            self.client = OpenAI(base_url=base_url, api_key="ollama")
+        else:
+            api_key = os.getenv("OPENAI_API_KEY")
+            self.client = OpenAI(api_key=api_key)
 
     def ask_llm(self, question, prediction, reference):
         prompt = (
@@ -53,13 +44,13 @@ class QAEvaluator:
             "Respond only with: Score: X\nExplanation: ..."
         )
 
-        model_name = "llama3.1:8b" if use_ollama else "gpt-4"
+        model_name = self.model_name
 
         # todo: parameterize by the 1. model, ollama  2. have a boolean for RUN LLM as Judge, by default TRUE and default to ollama 
         try:
-            print(model_name)
-            response = client.chat.completions.create(
-                model=model_name,
+            print("Calling LLM:", self.model_name)
+            response = self.client.chat.completions.create(
+                model=self.model_name,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.0,
             )
@@ -115,7 +106,7 @@ class QAEvaluator:
         for i, r in enumerate(results):
             r["codebert"] = pred_results[0][i]  # Extracting codebert score for each result
         
-        if use_llm_judge:
+        if self.use_llm_judge:
             for r in results:
                 score, explanation = self.ask_llm(r["question"], r["prediction"], r["reference"])
                 r["llm_score"] = score

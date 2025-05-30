@@ -4,11 +4,19 @@ from src.qa_evaluator.evaluator import QAEvaluator
 
 def main():
     # Load JSON file
+    with open("config.json", "r", encoding="utf-8") as cfg:
+        config = json.load(cfg)
+
+    # Extract config values
+    use_ollama = config.get("use_ollama", True)
+    use_llm_judge = config.get("use_llm_judge", True)
+    model_name = config["model_name_ollama"] if use_ollama else config["model_name_openai"]
+
     with open("data/LLM_generated_v1.json", "r", encoding="utf-8") as f:
         qa_pairs = json.load(f)
 
     # Instantiate and run evaluator
-    evaluator = QAEvaluator()
+    evaluator = QAEvaluator(model_name=model_name, use_llm_judge=use_llm_judge)    
     results = evaluator.evaluate(qa_pairs)
 
     # Save results
