@@ -28,11 +28,13 @@ class QAEvaluator:
         self.smooth = SmoothingFunction().method1
         # Create OpenAI/Ollama client
         if use_ollama:
-            base_url = os.getenv("OLLAMA_BASE_URL")
+            base_url = os.getenv("OLLAMA_BASE_URL", "https://ollama.pods.tacc.develop.tapis.io")
             self.client = OpenAI(base_url=base_url, api_key="ollama")
+            print(f"Using Ollama with base url: {base_url}")
         else:
             api_key = os.getenv("OPENAI_API_KEY")
             self.client = OpenAI(api_key=api_key)
+            print(f"Using OpenAI with API key: {api_key}")
 
     def ask_llm(self, question, prediction, reference):
         prompt = (
