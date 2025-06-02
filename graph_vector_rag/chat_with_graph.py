@@ -49,7 +49,7 @@ def get_llm_for_provider(provider):
            timeout=None,
            max_retries=2)
     else:
-       llm = ChatOllama(model=config["llm_name"], temperature=0)
+       llm = ChatOllama(model=config["llm_name"], base_url=config['llm_base_url'], temperature=0)
     return llm
 
 
