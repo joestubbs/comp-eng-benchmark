@@ -1,5 +1,10 @@
 import json
 import pandas as pd
+import sys
+import os 
+sys.path.append(os.path.curdir)
+print(f"python path: {sys.path}")
+
 from src.qa_evaluator.evaluator import QAEvaluator
 
 def main():
@@ -11,16 +16,19 @@ def main():
     use_ollama = config.get("use_ollama", True)
     use_llm_judge = config.get("use_llm_judge", True)
     model_name = config["model_name_ollama"] if use_ollama else config["model_name_openai"]
+    qa_sets_path = config['qa_sets_path']
 
-    with open("data/LLM_generated_v1.json", "r", encoding="utf-8") as f:
+    with open(qa_sets_path, "r", encoding="utf-8") as f:
         qa_pairs = json.load(f)
 
     # Instantiate and run evaluator
-    evaluator = QAEvaluator(model_name=model_name, use_llm_judge=use_llm_judge)    
+    evaluator = QAEvaluator(model_name=model_name, 
+                            use_llm_judge=use_llm_judge, 
+                            use_ollama=use_ollama)    
     results = evaluator.evaluate(qa_pairs)
 
     # Save results
-    output_path = "outputs/qa_evaluation_results.csv"
+    output_path = "outputs/qa_evaluation_results_jfs.csv"
     pd.DataFrame(results).to_csv(output_path, index=False)
     print(f"\nEvaluation completed. Results saved to '{output_path}'.")
 
