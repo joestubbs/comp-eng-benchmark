@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 
 # Neo4j
+import neo4j
 from neo4j import GraphDatabase
 
 # Langchain
@@ -39,7 +40,7 @@ def get_embedding_for_provider():
     if config["llm_provider"]=="openai":
         embeddings = OpenAIEmbeddings(model=config["embedding"]["model"])
     else:
-        embeddings = OllamaEmbeddings(model=config["embedding"]["model"])
+        embeddings = OllamaEmbeddings(model=config["embedding"]["model"], base_url=config['llm_base_url'])
     return embeddings
 
 def initializeVectorIndex():
@@ -52,9 +53,19 @@ def initializeVectorIndex():
 
     with driver.session() as session:
         #cypher = "CREATE VECTOR INDEX " + vector_index + " IF NOT EXISTS FOR (c:" +vector_index_on_node+") ON c."+ embedding_nodel_label +" OPTIONS { indexConfig: { `vector.dimensions`:"+ str(dimension)+ ",`vector.similarity_function`:'"+ similarity_fn+"'}};"
-        cypher = "CALL db.index.vector.createNodeIndex('chunkVectorIndex', 'Embedding', 'value', 3072, 'COSINE');"
+        #  TODO -- looks like some values are hard-coded here in the cypher, need to review...
+        cypher = f"CALL db.index.vector.createNodeIndex('chunkVectorIndex', 'Embedding', 'value', { dimension }, 'COSINE');"
         print("cypher ===  " + cypher)
-        session.run(cypher)
+        try:
+            session.run(cypher)
+        except neo4j.exceptions.ClientError as e:
+            if hasattr(e, "message"):
+                if "equivalent index already exists" in e.message:
+                    print(f"Got duplicate index error; ignoring...")
+            else:
+                print(f"Got unrecognized neo4j exception: {e}")
+                raise e 
+
         driver.close()
 
 
