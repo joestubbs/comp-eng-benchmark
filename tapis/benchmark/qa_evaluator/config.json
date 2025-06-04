@@ -1,5 +1,5 @@
 {
-    "model_name_ollama": "meta-llama/Llama-3.1-8B",
+    "model_name_ollama": "llama3.1:8b",
     "model_name_openai": "gpt-4",
     "use_ollama": true,
     "use_llm_judge": true
