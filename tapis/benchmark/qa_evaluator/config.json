@@ -1,6 +1,7 @@
 {
     "model_name_ollama": "llama3.1:8b",
     "model_name_openai": "gpt-4",
+    "qa_sets_path": "/home/jstubbs/gits/ml-and-kgs/comp-eng-benchmark/tapis/benchmark/qa_evaluator/data/first_test_jfs.json",
     "use_ollama": true,
     "use_llm_judge": true
   }
